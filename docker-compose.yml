@@ -1,0 +1,51 @@
+services:
+  blender-mcp:
+    build:
+      context: ./mcp-blender-server
+    container_name: blender-mcp
+    environment:
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: 8000
+      MCP_LOG_LEVEL: INFO
+      BLENDER_BIN: blender
+      BLENDER_ENGINE: CYCLES
+      BLENDER_SAMPLES: 96
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data/input:/workspace/input
+      - ./data/refs:/workspace/refs
+      - ./data/output:/workspace/output
+    restart: unless-stopped
+
+  mcp-smoke-test:
+    build:
+      context: ./mcp-blender-server
+    container_name: blender-mcp-smoke-test
+    depends_on:
+      - blender-mcp
+    volumes:
+      - ./data/input:/workspace/input
+      - ./data/refs:/workspace/refs
+      - ./data/output:/workspace/output
+    entrypoint: ["python", "scripts/smoke_test.py"]
+    environment:
+      MCP_URL: http://blender-mcp:8000/mcp
+      SMOKE_OUTPUT_NAME: smoke-test
+      SMOKE_REFERENCE_IMAGE: ""
+
+  mcp-plan-runner:
+    build:
+      context: ./mcp-blender-server
+    container_name: blender-mcp-plan-runner
+    depends_on:
+      - blender-mcp
+    volumes:
+      - ./data/input:/workspace/input
+      - ./data/refs:/workspace/refs
+      - ./data/output:/workspace/output
+    entrypoint: ["python", "scripts/run_plan.py"]
+    environment:
+      MCP_URL: http://blender-mcp:8000/mcp
+      PLAN_FILE: /workspace/input/plans/plant-example-v1.json
+      PLAN_RUNS_DIR: /workspace/output/plan-runs

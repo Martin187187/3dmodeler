@@ -1,0 +1,107 @@
+{
+  "plan_id": "plant-reference-v1",
+  "calls": [
+    {
+      "tool": "list_basic_modeling_tools",
+      "args": {}
+    },
+    {
+      "tool": "model_with_operations",
+      "args": {
+        "output_name": "plant-example-v1",
+        "reference_image": "plant.png",
+        "views": 6,
+        "resolution": 768,
+        "engine": "CYCLES",
+        "samples": 96,
+        "operations": [
+          {
+            "action": "add_primitive",
+            "primitive": "cylinder",
+            "name": "PotOuter",
+            "radius": 0.7,
+            "depth": 0.9,
+            "location": [0.0, 0.0, 0.45]
+          },
+          {
+            "action": "add_modifier",
+            "object": "PotOuter",
+            "modifier": "BEVEL",
+            "width": 0.03,
+            "segments": 4,
+            "apply": true
+          },
+          {
+            "action": "boolean_difference",
+            "object": "PotOuter",
+            "cutter_primitive": "cylinder",
+            "cutter_name": "PotInner",
+            "cutter_location": [0.0, 0.0, 0.58],
+            "cutter_scale": [0.78, 0.78, 0.9],
+            "apply": true,
+            "keep_cutter": false
+          },
+          {
+            "action": "shade_smooth",
+            "object": "PotOuter"
+          },
+          {
+            "action": "add_primitive",
+            "primitive": "cylinder",
+            "name": "Soil",
+            "radius": 0.52,
+            "depth": 0.16,
+            "location": [0.0, 0.0, 0.86]
+          },
+          {
+            "action": "add_primitive",
+            "primitive": "cylinder",
+            "name": "Stem",
+            "radius": 0.06,
+            "depth": 1.0,
+            "location": [0.0, 0.0, 1.42]
+          },
+          {
+            "action": "shade_smooth",
+            "object": "Stem"
+          },
+          {
+            "action": "add_primitive",
+            "primitive": "sphere",
+            "name": "LeafA",
+            "radius": 0.16,
+            "location": [0.25, 0.0, 1.9],
+            "scale": [1.7, 0.45, 0.25],
+            "rotation": [0.0, 0.4, 0.5]
+          },
+          {
+            "action": "shade_smooth",
+            "object": "LeafA"
+          },
+          {
+            "action": "duplicate_object",
+            "object": "LeafA",
+            "name": "LeafB",
+            "location_offset": [-0.46, 0.04, -0.04]
+          },
+          {
+            "action": "transform_object",
+            "object": "LeafB",
+            "rotation": [0.0, -0.3, -0.55]
+          },
+          {
+            "action": "duplicate_object",
+            "object": "LeafA",
+            "name": "LeafC",
+            "location_offset": [0.0, 0.24, -0.05]
+          },
+          {
+            "action": "transform_object",
+            "object": "LeafC",
+            "rotation": [0.45, 0.0, 0.05]
+          }
+        ]
+      }
+    }
+  ]
+}
